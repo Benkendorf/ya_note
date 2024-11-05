@@ -51,10 +51,8 @@ class TestRoutes(TestCase):
         login_url = reverse('users:login')
         for name in ('notes:edit', 'notes:delete', 'notes:add'):
             with self.subTest(name=name):
-                if name == 'notes:add':
-                    url = reverse(name)
-                else:
-                    url = reverse(name, args=(self.note.slug,))
+                url = (reverse(name) if name == 'notes:add'
+                       else reverse(name, args=(self.note.slug,)))
                 redirect_url = f'{login_url}?next={url}'
                 response = self.client.get(url)
                 self.assertRedirects(response, redirect_url)
