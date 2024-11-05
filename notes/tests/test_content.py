@@ -15,6 +15,7 @@ class TestNoteList(TestCase):
     def setUpTestData(cls):
         cls.NOTES_QUANTITY = 5
         cls.author = User.objects.create(username='Лев Толстой')
+        cls.other_author = User.objects.create(username='Антон Чехов')
         all_notes = [
             Note(
                 title=f'Заметка {index}',
@@ -24,9 +25,19 @@ class TestNoteList(TestCase):
             )
             for index in range(cls.NOTES_QUANTITY)
         ]
+
+        other_note = Note(
+            title='Заметка',
+            text='Просто текст заметки.',
+            slug='slug-other',
+            author=cls.other_author
+        )
+
+        all_notes.append(other_note)
+
         Note.objects.bulk_create(all_notes)
 
-    def test_notes_count(self):
+    def test_notes_count_by_author(self):
         # Загружаем главную страницу.
         self.client.force_login(self.author)
         response = self.client.get(self.LIST_URL)
